@@ -1,7 +1,9 @@
 #!/usr/bin/env python
 # coding: utf-8
-**Import Packages**
-# In[155]:
+
+# **Import Packages**
+
+# In[68]:
 
 
 import re
@@ -10,13 +12,13 @@ import pandas as pd
 from pprint import pprint
 
 
-# In[7]:
+# In[69]:
 
 
 get_ipython().system('sudo pip3 install gensim')
 
 
-# In[156]:
+# In[70]:
 
 
 # Gensim
@@ -26,32 +28,32 @@ from gensim.utils import simple_preprocess
 from gensim.models import CoherenceModel
 
 
-# In[10]:
+# In[71]:
 
 
 get_ipython().system('sudo pip3 install spacy')
 
 
-# In[157]:
+# In[72]:
 
 
 # spacy for lemmatization
 import spacy
 
 
-# In[13]:
+# In[73]:
 
 
 get_ipython().system('sudo pip3 install pyldavis')
 
 
-# In[15]:
+# In[74]:
 
 
 get_ipython().system('sudo pip3 install matplotlib')
 
 
-# In[158]:
+# In[75]:
 
 
 # Plotting tools
@@ -61,7 +63,7 @@ import matplotlib.pyplot as plt
 get_ipython().run_line_magic('matplotlib', 'inline')
 
 
-# In[159]:
+# In[76]:
 
 
 # Enable logging for gensim - optional
@@ -72,20 +74,20 @@ import warnings
 warnings.filterwarnings("ignore",category=DeprecationWarning)
 
 
-# In[19]:
+# In[77]:
 
 
 get_ipython().system('sudo pip3 install nltk')
 
 
-# In[160]:
+# In[78]:
 
 
 # Download nltk stopwords and spacy model
 import nltk; nltk.download('stopwords')
 
 
-# In[227]:
+# In[79]:
 
 
 from nltk.corpus import stopwords
@@ -93,7 +95,7 @@ stop_words = stopwords.words('english')
 stop_words.extend(['year', 'com', 'day', 'datum'])
 
 
-# In[228]:
+# In[80]:
 
 
 print(len(stop_words))
@@ -101,43 +103,43 @@ print(len(stop_words))
 
 # ##**Import Dataset**
 
-# In[229]:
+# In[81]:
 
 
 import warnings
 warnings.filterwarnings("ignore")
 
 # Import Dataset
-df = pd.read_csv("data_amazon.csv")
+df = pd.read_csv("data_ms.csv")
 
 
-# In[230]:
+# In[82]:
 
 
 df.info()
 
 
-# In[209]:
+# In[83]:
 
 
 pd.set_option('display.max_columns', 100)
 print(df)
 
 
-# In[210]:
+# In[84]:
 
 
 # Convert email body to list
 data = df.Speech_to_Text.values.tolist()
 
 
-# In[211]:
+# In[85]:
 
 
 print(data)
 
 
-# In[232]:
+# In[86]:
 
 
 df = [re.sub('year',"", line) for line in df] #'year', 'com', 'day', 'datum'
@@ -148,7 +150,7 @@ df = [re.sub('datum',"", line) for line in df]
 
 # ##**Tokenize words and Clean-up text**
 
-# In[233]:
+# In[87]:
 
 
 def sent_to_words(sentences):
@@ -162,7 +164,7 @@ print(data_words[3])
 
 # ##**Creating Bigram and Trigram Models**
 
-# In[234]:
+# In[88]:
 
 
 from gensim.models.phrases import Phrases, Phraser
@@ -181,7 +183,7 @@ print(trigram_mod[bigram_mod[data_words[5]]])
 
 # ##**Remove Stopwords, Make Bigrams and Lemmatize**
 
-# In[235]:
+# In[89]:
 
 
 # Define functions for stopwords, bigrams, trigrams and lemmatization
@@ -203,33 +205,33 @@ def lemmatization(texts, allowed_postags=['NOUN']): # 'ADJ', 'VERB', 'ADV'
     return texts_out
 
 
-# In[236]:
+# In[90]:
 
 
 # Remove Stop Words
 data_words_nostops = remove_stopwords(data_words)
 
 
-# In[237]:
+# In[91]:
 
 
 # Form Bigrams
 data_words_bigrams = make_bigrams(data_words_nostops)
 
 
-# In[193]:
+# In[92]:
 
 
 get_ipython().system('sudo pip3 install https://github.com/explosion/spacy-models/releases/download/en_core_web_md-2.0.0/en_core_web_md-2.0.0.tar.gz')
 
 
-# In[49]:
+# In[93]:
 
 
 get_ipython().system('sudo pip3 install -U spacy download en_core_web_sm')
 
 
-# In[247]:
+# In[94]:
 
 
 import en_core_web_sm
@@ -240,14 +242,14 @@ nlp = en_core_web_sm.load()
 # nlp = spacy.load('en_core_web_sm', disable=['parser', 'ner'])
 
 
-# In[248]:
+# In[95]:
 
 
 # Do lemmatization keeping only noun, adj, vb, adv
 data_lemmatized = lemmatization(data_words_bigrams, allowed_postags=['NOUN'])
 
 
-# In[249]:
+# In[96]:
 
 
 print(data_lemmatized[:1])
@@ -255,7 +257,7 @@ print(data_lemmatized[:1])
 
 # ##**Create the Dictionary and Corpus needed for Topic Modeling**
 
-# In[250]:
+# In[97]:
 
 
 # Create Dictionary
@@ -271,7 +273,7 @@ corpus = [id2word.doc2bow(text) for text in texts]
 print(corpus[:1])
 
 
-# In[251]:
+# In[98]:
 
 
 # Human readable format of corpus (term-frequency)
@@ -280,7 +282,7 @@ print(corpus[:1])
 
 # ##**Building the Topic Model**
 
-# In[252]:
+# In[99]:
 
 
 # Build LDA model
@@ -297,7 +299,7 @@ lda_model = gensim.models.ldamodel.LdaModel(corpus=corpus,
 
 # ##**View the topics in LDA model**
 
-# In[253]:
+# In[100]:
 
 
 # Print the Keyword in the 10 topics
@@ -307,7 +309,7 @@ doc_lda = lda_model[corpus]
 
 # ##**Compute Model Coherence Score**
 
-# In[254]:
+# In[101]:
 
 
 # Compute Coherence Score
@@ -316,7 +318,7 @@ coherence_lda = coherence_model_lda.get_coherence()
 print('\nCoherence Score: ', coherence_lda)
 
 
-# In[255]:
+# In[102]:
 
 
 # Visualize the topics
@@ -325,9 +327,58 @@ vis = pyLDAvis.gensim.prepare(lda_model, corpus, id2word)
 pyLDAvis.display(vis)
 
 
+# In[ ]:
+
+
+# 파라미터를 튜닝해볼까!
+num_topics = 10
+chunksize = 2000
+passes = 20
+iterations = 400
+eval_every = None
+
+
+get_ipython().run_line_magic('time', 'model = LdaModel(corpus = corpus, id2word = id2word, chunksize = chunksize,                       alpha ="auto", eta="auto",                       iterations = iterations, num_topics = num_topics,                       passes = passes, eval_every = eval_every)')
+
+
+# In[ ]:
+
+
+
+
+
+# In[106]:
+
+
+coherences=[]
+perplexities=[]
+passes=[]
+warnings.filterwarnings('ignore')
+
+for i in range(10):
+    
+    ntopics, nwords = 200, 100
+    if i==0:
+        p=1
+    else:
+        p=i*5
+    tic = time.time()
+    lda4 = LdaModel(corpus, id2word=dictionary, num_topics=ntopics, iterations=400, passes=p)
+    print('epoch',p,time.time() - tic)
+    # tfidf, corpus 무슨 차이?
+    # lda = models.ldamodel.LdaModel(corpus, id2word=dictionary, num_topics=ntopics, iterations=200000)
+
+    cm = CoherenceModel(model=lda4, corpus=corpus, coherence='u_mass')
+    coherence = cm.get_coherence()
+    print("Cpherence",coherence)
+    coherences.append(coherence)
+    print('Perplexity: ', lda4.log_perplexity(corpus),'\n\n')
+    perplexities.append(lda4.log_perplexity(corpus))
+
+
 # ##**How to find the optimal number of topics for LDA?**
 
-# In[153]:
+# In[103]:
 
 
 def compute_coherence_values(dictionary, corpus, texts, limit, start=2, step=3):
@@ -357,14 +408,14 @@ def compute_coherence_values(dictionary, corpus, texts, limit, start=2, step=3):
     return model_list, coherence_values
 
 
-# In[154]:
+# In[104]:
 
 
 # Can take a long time to run.
 model_list, coherence_values = compute_coherence_values(dictionary=id2word, corpus=corpus, texts=data_lemmatized, start=2, limit=20, step=2)
 
 
-# In[125]:
+# In[105]:
 
 
 # Show graph
@@ -377,7 +428,7 @@ plt.legend(("coherence_values"), loc='best')
 plt.show()
 
 
-# In[127]:
+# In[40]:
 
 
 # Print the coherence scores
@@ -385,13 +436,13 @@ for m, cv in zip(x, coherence_values):
     print("Num Topics =", m, " has Coherence Value of", round(cv, 4))
 
 
-# In[78]:
+# In[41]:
 
 
 print(len(model_list))
 
 
-# In[79]:
+# In[42]:
 
 
 # Select the model and print the topics
@@ -402,7 +453,7 @@ pprint(optimal_model.print_topics(num_words=10))
 
 # ##**Finding the dominant topic in each sentence**
 
-# In[256]:
+# In[43]:
 
 
 def format_topics_sentences(ldamodel=lda_model, corpus=corpus, texts=data):
@@ -440,7 +491,7 @@ df_dominant_topic.head(10)
 
 # ##**Find the most representative document for each topic**
 
-# In[257]:
+# In[44]:
 
 
 # Group top 5 sentences under each topic
@@ -465,7 +516,7 @@ sent_topics_sorteddf_mallet.head()
 
 # ##**Topic distribution across documents**
 
-# In[258]:
+# In[45]:
 
 
 # Number of Documents for Each Topic
@@ -491,13 +542,13 @@ df_dominant_topics
 
 # ###**Word CLouds of Top N Keywords in each topic**
 
-# In[90]:
+# In[46]:
 
 
 get_ipython().system('sudo pip3 install wordcloud')
 
 
-# In[272]:
+# In[47]:
 
 
 # 1. Wordcloud of Top N words in each topic
@@ -538,7 +589,7 @@ plt.show()
 
 # ###**Word Counts of Topic Keywords**
 
-# In[260]:
+# In[48]:
 
 
 from collections import Counter
@@ -574,7 +625,7 @@ plt.show()
 
 # ###**Sentence Chart Colored by Topic**
 
-# In[269]:
+# In[49]:
 
 
 # Sentence Coloring of N Sentences
@@ -625,7 +676,7 @@ sentences_chart()
 
 # ###**Number of Documents by Dominant Topic, Weightage**
 
-# In[262]:
+# In[50]:
 
 
 # Sentence Coloring of N Sentences
@@ -660,7 +711,7 @@ df_top3words = df_top3words_stacked.groupby('topic_id').agg(', \n'.join)
 df_top3words.reset_index(level=0,inplace=True)
 
 
-# In[263]:
+# In[51]:
 
 
 from matplotlib.ticker import FuncFormatter
@@ -689,7 +740,7 @@ plt.show()
 
 # ###**pyLDAVis**
 
-# In[112]:
+# In[ ]:
 
 
 import pyLDAvis.gensim
