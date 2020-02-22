@@ -8,7 +8,7 @@
 - LDA(Latent Dirichlet Allocation) Topic Modeling
 - ScikitLearn Euclidean distance
 
-## 개발 환경
+## 순서도
 ![flow chart](https://user-images.githubusercontent.com/41162249/75070619-f5e14e80-5536-11ea-97ae-a25b16e3f8ad.JPG)
 
 ## 구현 기능
