@@ -34,4 +34,4 @@
 ## 데모 실행 결과
 
 ## 구성원
->Olga Chernyaeva  김수민  손창영  이세진  박재성
+>Olga Chernyaeva  김수민   이세진  박재성 손창영 
